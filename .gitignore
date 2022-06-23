@@ -1,4 +1,1 @@
 node_modules/
-
-#connection to database
-database.util.js
