@@ -1,2 +1,4 @@
 node_modules/
-utils/
+
+#connection to database
+database.util.js
