@@ -37,12 +37,10 @@ const getRegisterById = async (req, res)=>{
 //create register or check in
 const createRegister = async (req, res)=>{
     try {
-        const { entranceTime, exitTime, status } = req.body;
+        const { entranceTime } = req.body;
 
         const newRegister = await Register.create({
-            entranceTime,
-            exitTime,
-            status
+            entranceTime
         })
 
         res.status(201).json({
@@ -56,24 +54,28 @@ const createRegister = async (req, res)=>{
 
 //update register or check out
 const updateRegister = async (req, res)=>{
-    const {id} = req.params;
-    const {status} = req.body;
-    
-    const user = await Register.findOne({ where: {id} });
+    try {
+      const { id } = req.params;
+      const { exitTime } = req.body;
 
-    if (!register) {
+      const register = await Register.findOne({ where: { id } });
+
+      if (!register) {
         res.status(404).json({
-            status: 'error',
-            message: 'register not found'
-        })
+          status: "error",
+          message: "register not found",
+        });
+      }
+
+      await register.update({
+        exitTime: new Date(),
+        status: "Out",
+      });
+
+      res.status(204).json({ status: "Register updated" });
+    } catch (error) {
+      console.log(err);
     }
-
-    await user.update({
-        exitTime: new Date(), 
-        status: 'Out'
-    })
-
-    res.status(204).json({ status: 'Register updated' })
 }
 
 //cancel register
